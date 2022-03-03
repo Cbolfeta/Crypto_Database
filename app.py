@@ -1,5 +1,6 @@
 ## Necessary dependencies
 from dash import dash, Input, Output, callback, dash_table, html, dcc
+import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
 import eventstudy as es
@@ -103,8 +104,18 @@ app.layout = html.Div([
                 id='table-container',
                 sort_action="native",
                 hidden_columns=['Unnamed: 0','key','link','img','AR-2','AR-1','AR0','AR1','AR2','AR3','AR4','Relevant_pos','Relevant_neg'],
-                columns=[{'id': c, 'name': c} for c in cripto.columns.values],),)
-        ])
+                columns=[{'id': c, 'name': c} for c in cripto.columns.values],
+            ),
+            ),
+            html.Div(children=[
+            dbc.Button(
+                id='btn',
+                children=[html.I(className="fa fa-download mr-1"), "Download"],
+                color='info',
+                className='mt-1')
+            ]),
+            dcc.Download(id='download-component'),
+        ],className='m-4')
     ]),
     html.Div([
         html.Div([
@@ -113,6 +124,12 @@ app.layout = html.Div([
         ])
     ]),
 ])
+@app.callback(
+    Output("download-component","data"),
+    Input("btn","n_clicks"),
+    prevent_initial_call=True)
+def func(n_clicks):
+    return dcc.send_file("news3k_relevant_FinBERT.csv")
 @app.callback(
     Output('indicator', 'figure'),
     [Input('date-filter', 'value')])
