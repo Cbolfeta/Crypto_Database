@@ -64,7 +64,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # Set up the app layout
 
 dates = cripto.date.unique().tolist()
-
+labels = cripto.labels.unique().tolist()
 app.layout = html.Div([
     html.Div([
         html.H1("BTC Event Dashboard"),
@@ -89,7 +89,7 @@ app.layout = html.Div([
                 searchable = False,
                 className = 'dropdown', style={'fontSize': "24px",'textAlign': 'center'},
             ),
-        ])
+        ]),
     ]),
     html.Div([
         html.Div(children=[
@@ -103,7 +103,8 @@ app.layout = html.Div([
             dash_table.DataTable(
                 id='table-container',
                 sort_action="native",
-                hidden_columns=['Unnamed: 0','key','link','img','AR-2','AR-1','AR0','AR1','AR2','AR3','AR4','Relevant_pos','Relevant_neg'],
+                filter_action="native",
+                hidden_columns=['date_str','Unnamed: 0','key','link','img','AR-2','AR-1','AR0','AR1','AR2','AR3','AR4','Relevant_pos','Relevant_neg','FinBERT_positive','FinBERT_negative','FinBERT_neutral','adjusted_neutral','Unnamed: 0.1'],
                 columns=[{'id': c, 'name': c} for c in cripto.columns.values],
             ),
             ),
@@ -157,14 +158,13 @@ def display_table(date):
 def update_chart(date):
     event = es.Single.FamaFrench_3factor(
         security_ticker = ticker,
-        event_date = np.datetime64(date),
+        event_date = pd.to_datetime(date),
         event_window = (-2,+4),
         estimation_size = 100,
         buffer_size = 30
     )
     index = np.array([-2,-1,0,1,2,3,4])
     index = pd.Series(index)
-
 
     CAR = event.CAR
     CAR = pd.Series(CAR)
