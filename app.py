@@ -103,7 +103,7 @@ app.layout = html.Div([
             dash_table.DataTable(
                 id='table-container',
                 sort_action="native",
-                hidden_columns=['Unnamed: 0','key','link','img','AR-2','AR-1','AR0','AR1','AR2','AR3','AR4','Relevant_pos','Relevant_neg'],
+                hidden_columns=['FinBERT_neutral','Unnamed: 0','key','link','img','AR-2','AR-1','AR0','AR1','AR2','AR3','AR4','Relevant_pos','Relevant_neg'],
                 columns=[{'id': c, 'name': c} for c in cripto.columns.values],
             ),
             ),
@@ -219,6 +219,6 @@ def update_chart(date):
 # Run server
 ## Importing Fama French 3 Factors and Stock Return
 if __name__ == '__main__':
-     app.run_server(debug=False)
+     app.run_server(debug=True)
 
 
